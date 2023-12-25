@@ -5,7 +5,7 @@ import { useQuiz } from "../QuizContext.tsx";
 import { decode } from "html-entities";
 
 function Game() {
-  const { state } = useQuiz();
+  const { state, dispatch } = useQuiz();
   const question = state.question;
   return (
     <>
@@ -17,9 +17,17 @@ function Game() {
             return <AnswerOption key={answer} answer={answer} />;
           })}
         </div>
-        {state.userAnswer && <button>Submit</button>}
+        {state.userAnswer && state.gameStatus != "answered" && (
+          <button
+            onClick={() => {
+              dispatch({ type: "setStatus", payload: "answered" });
+            }}
+          >
+            Submit
+          </button>
+        )}
 
-        {/* <Result /> */}
+        {state.gameStatus == "answered" && <Result />}
       </div>
     </>
   );
