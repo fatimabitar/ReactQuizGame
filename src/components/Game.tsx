@@ -7,6 +7,16 @@ import { decode } from "html-entities";
 function Game() {
   const { state, dispatch } = useQuiz();
   const question = state.question;
+
+  const handleSubmit = () => {
+    dispatch({ type: "setStatus", payload: "answered" });
+
+    if(state.userAnswer ==  state.question?.correct_answer) {
+      dispatch({ type: "setScore", payload: "correct" });
+    } else {
+      dispatch({ type: "setScore", payload: "incorrect" });
+    }
+  };
   return (
     <>
       <div className="container game-screen">
@@ -18,16 +28,21 @@ function Game() {
           })}
         </div>
         {state.userAnswer && state.gameStatus != "answered" && (
-          <button
-            onClick={() => {
-              dispatch({ type: "setStatus", payload: "answered" });
-            }}
-          >
-            Submit
-          </button>
+          <button onClick={handleSubmit}>Submit</button>
         )}
 
-        {state.gameStatus == "answered" && <Result />}
+        {state.gameStatus == "answered" && (
+          <>
+            <Result />
+            <button
+              onClick={() => {
+                dispatch({ type: "setStatus", payload: "idle" });
+              }}
+            >
+              Next Question
+            </button>
+          </>
+        )}
       </div>
     </>
   );

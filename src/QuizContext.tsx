@@ -24,17 +24,23 @@ interface QuizState {
   question: Question | null;
   gameStatus: Status;
   userAnswer: string | null;
+  score: Score;
 }
-
+export interface Score {
+  correct: 0;
+  incorrect: 0;
+}
 type QuizAction =
   | { type: "setStatus"; payload: Status }
   | { type: "setQuestion"; payload: Question }
-  | { type: "setUserAnswer"; payload: string };
+  | { type: "setUserAnswer"; payload: string | null }
+  | { type: "setScore"; payload: "correct" | "incorrect" };
 
 const initialState: QuizState = {
   gameStatus: "idle",
   question: null,
   userAnswer: null,
+  score: { correct: 0, incorrect: 0 },
 };
 
 const QuizContext = createContext<QuizContext>({
@@ -67,6 +73,11 @@ function quizReducer(state: QuizState, action: QuizAction): QuizState {
       return { ...state, userAnswer: action.payload };
     case "setStatus":
       return { ...state, gameStatus: action.payload };
+    case "setScore":
+      // eslint-disable-next-line no-case-declarations
+      const score = state.score;
+      score[action.payload] += 1;
+      return { ...state, score: score };
     default:
       throw new Error("Unknown action");
   }

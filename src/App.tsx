@@ -11,6 +11,7 @@ function App() {
 
   function fetchQuestion() {
     dispatch({ type: "setStatus", payload: "fetching" });
+    dispatch({ type: "setUserAnswer", payload: null });
     axios
       .get<QuestionResponse>(
         "https://opentdb.com/api.php?amount=1&category=11&difficulty=easy&type=multiple"
